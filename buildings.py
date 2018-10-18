@@ -24,9 +24,15 @@ df = df.drop(['CAT_VAR', 'TAG_VALUE'], axis = 1)
 df = df.groupby('READ_TIME').sum()
 mbep1_col = col[8:12]
 mbep2_col = col[0:6]
+df1 = df.drop(mbep2_col, axis = 1)
+df2 = df[mbep2_col]
 for i in mbep1_col:
-    dtest = dtest[dtest[i] != 0]
-dtest['mbep_sum'] = dtest[mbep_columns].sum(axis = 1)
+    df1 = df1[df1[i] != 0]
+for i in mbep2_col:
+    df2 = df2[df2[i] != 0]
+df = pd.concat([df1, df2]).drop_duplicates()
+df['mbep_sum1'] = df[mbep1_col].sum(axis = 1)
+df['mbep_sum2'] = df[mbep2_col].sum(axis = 1)
 
 dtest.index = pd.to_datetime(dtest.index)
 dtestX = dtest.resample('H').mean()
